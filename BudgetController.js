@@ -8,11 +8,11 @@ BudgetController = (function () {
         this.description = description;
     };
 
-    Expense = function (id, value, description, percentage) {
+    Expense = function (id, value, description) {
         this.id = id;
         this.value = value;
         this.description = description;
-        this.percentage = percentage;
+        this.percentage = -1;
     };
 
     var data = {
@@ -26,8 +26,8 @@ BudgetController = (function () {
         },
     };
 
-    function calculatePercentage(value){
-        return (value/data.totals.inc)*100;
+    Expense.prototype.calculatePercentage= function(){
+        this.percentage = Math.round((this.value/data.totals.inc)*100);
     };
 
     function generateID(obj){
@@ -40,6 +40,14 @@ BudgetController = (function () {
             return data;
         },
 
+        getIncome:function(){
+            return data.totals.inc;
+        },
+
+        getExpenses:function(){
+            return data.totals.exp;
+        },
+
         addItem:function(inputs){
             var item,id;
             if(inputs.type=='inc'){
@@ -49,11 +57,24 @@ BudgetController = (function () {
             }
             else{
                 id=generateID(data.allItems.exp);
-                item=new Expense(id,inputs.value,inputs.desc,calculatePercentage(inputs.value));
+                item=new Expense(id,inputs.value,inputs.desc);
                 data.totals['exp']+=inputs.value;
             }
             data.allItems[inputs.type].push(item);
             return item;
+        },
+
+        updateExpensesPercentages:function(){
+            data.allItems.exp.forEach(function(event){
+                event.calculatePercentage();
+            });            
+        },
+
+        getPercentages:function(){
+            var percentages=data.allItems.exp.map(function(obj){
+                return obj.percentage;
+            });
+            return percentages;
         }
     };
 })();

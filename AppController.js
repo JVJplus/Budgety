@@ -4,12 +4,27 @@ AppController = (function (BudgetCntl, UICntl) {
 
     function ctrlAddItem() {
         var inputs = UICntl.getInputs();
-        var itemData=BudgetCntl.addItem(inputs);
-        UICntl.clearFields();
-        UICntl.addListItem(inputs.type,itemData);
 
-        
-        // console.log(BudgetCntl.getDatas());
+        if (!inputs.desc || isNaN(inputs.value)) return;
+
+        var itemData = BudgetCntl.addItem(inputs);
+        UICntl.clearFields();
+        UICntl.addListItem(inputs.type, itemData);
+
+        updatePercentages();
+        updateBudget();
+    }
+
+    function updatePercentages(){
+        BudgetCntl.updateExpensesPercentages();
+        var percentages = BudgetCntl.getPercentages();
+        UICntl.updatePercentages(percentages);
+    }
+
+    function updateBudget(){
+        var income=BudgetCntl.getIncome();
+        var expenses=BudgetCntl.getExpenses();
+        UICntl.updateBudget(income,expenses);
     }
 
     addEventController = function () {
@@ -26,6 +41,7 @@ AppController = (function (BudgetCntl, UICntl) {
 
     return {
         init: function () {
+            updateBudget();
             addEventController();
         },
     };
