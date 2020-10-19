@@ -75,6 +75,23 @@ BudgetController = (function () {
                 return obj.percentage;
             });
             return percentages;
+        },
+
+        removeList:function(type,id){
+            var index=-1;
+            for(var i=0;i<data.allItems[type].length;i++){
+                if(data.allItems[type][i].id==id){
+                    index=i;
+                    break;
+                }
+            }
+
+            // remove from array
+            var removedItem=data.allItems[type].splice(index,1);
+            var removedValue=removedItem[0].value;
+            
+            // change inc/exp
+            data.totals[type]-=removedValue;
         }
     };
 })();

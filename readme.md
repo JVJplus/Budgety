@@ -21,3 +21,6 @@ We had to write the JS code after watching the videos.
 * add a button to clear all incomes and/or expenses
 * use ES6 standards as much as possible
 * add webpack in it, and separat all the modules
+
+
+<!-- Add the image Architecture one! -->

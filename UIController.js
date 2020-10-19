@@ -12,7 +12,8 @@ UIController = (function () {
         budget_expenses_label:".budget__expenses--value",
         budget_expenses_percent:".budget__expenses--percentage",
         time_label:".budget__title--month",
-
+        delete_btn:".item__delete",
+        container:".container",
     };
 
     var formatPercentage = function (percent) {
@@ -130,8 +131,14 @@ UIController = (function () {
             }
         },
 
-        displayTime:d=function(month,year){
-            document.querySelector(DOMStrings.time_label).textContent=month+" "+year;
-        }
+        displayTime:function(month,year){
+            document.querySelector(DOMStrings.time_label).textContent=month+" "+year
+        },
+
+        removeList:function(id){
+            var node=document.getElementById(id);
+            node.parentElement.removeChild(node);
+        },
+
     };
 })();
