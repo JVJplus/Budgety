@@ -11,6 +11,8 @@ UIController = (function () {
         budget_income_label:".budget__income--value",
         budget_expenses_label:".budget__expenses--value",
         budget_expenses_percent:".budget__expenses--percentage",
+        time_label:".budget__title--month",
+
     };
 
     var formatPercentage = function (percent) {
@@ -126,6 +128,10 @@ UIController = (function () {
             else{
                 document.querySelector(DOMStrings.budget_expenses_percent).textContent="---"
             }
+        },
+
+        displayTime:d=function(month,year){
+            document.querySelector(DOMStrings.time_label).textContent=month+" "+year;
         }
     };
 })();

@@ -13,18 +13,27 @@ AppController = (function (BudgetCntl, UICntl) {
 
         updatePercentages();
         updateBudget();
-    }
+    };
 
     function updatePercentages(){
         BudgetCntl.updateExpensesPercentages();
         var percentages = BudgetCntl.getPercentages();
         UICntl.updatePercentages(percentages);
-    }
+    };
 
     function updateBudget(){
         var income=BudgetCntl.getIncome();
         var expenses=BudgetCntl.getExpenses();
         UICntl.updateBudget(income,expenses);
+    };
+
+    function updateTime(){
+        var time=new Date();
+        var monthNames = ["January", "February", "March", "April", "May", "June","July", "August", "September", "October", "November", "December"];
+        var month=monthNames[time.getMonth()];
+        var year=time.getFullYear();
+
+        UICntl.displayTime(month,year);
     }
 
     addEventController = function () {
@@ -41,6 +50,7 @@ AppController = (function (BudgetCntl, UICntl) {
 
     return {
         init: function () {
+            updateTime();
             updateBudget();
             addEventController();
         },
