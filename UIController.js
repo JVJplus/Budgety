@@ -7,47 +7,55 @@ UIController = (function () {
         inc_list: ".income__list",
         exp_list: ".expenses__list",
         percen_label: ".item__percentage",
-        budget_label:".budget__value",
-        budget_income_label:".budget__income--value",
-        budget_expenses_label:".budget__expenses--value",
-        budget_expenses_percent:".budget__expenses--percentage",
-        time_label:".budget__title--month",
-        delete_btn:".item__delete",
-        container:".container",
+        budget_label: ".budget__value",
+        budget_income_label: ".budget__income--value",
+        budget_expenses_label: ".budget__expenses--value",
+        budget_expenses_percent: ".budget__expenses--percentage",
+        time_label: ".budget__title--month",
+        delete_btn: ".item__delete",
+        container: ".container",
+        typeOption: ".add__type",
     };
 
     var formatPercentage = function (percent) {
-        if(percent==0) return "0 %";
-        if(percent==-1) return "- ---%";
+        if (percent == 0) return "0 %";
+        if (percent == -1 || percent == Infinity) return "- ---";
         if (percent > 999) return "> 1k" + " %";
         return "- " + percent + " %";
     };
-    
-    function convertToIndianCurrency(money){
-        var lastChar=money[money.length-1];
+
+    function convertToIndianCurrency(money) {
+        var lastChar = money[money.length - 1];
         // 123456=1,23,456
         // 12345=12,345
         // 1234=1,234
         // 123=123
-        var newNo="",noOfCharDone=0;
-        for(var i=money.length-2;i>=0;i--){
-                newNo=money[i]+newNo;
+        var newNo = "",
+            noOfCharDone = 0;
+        for (var i = money.length - 2; i >= 0; i--) {
+            newNo = money[i] + newNo;
             noOfCharDone++;
-            if(i!=0&&noOfCharDone%2==0){
-                newNo=","+newNo;
+            if (i != 0 && noOfCharDone % 2 == 0) {
+                newNo = "," + newNo;
             }
         }
-        
-        return newNo+lastChar;
+
+        return newNo + lastChar;
     }
 
-    var formatMoney=function(money){
-        money=parseFloat(money).toFixed(2);
-        var intVal=money.substr(0,money.indexOf('.'));
-        intVal=convertToIndianCurrency(intVal);
-        var decimalVal=money.substr(money.indexOf('.')+1);
-        return intVal+"."+decimalVal;
-    }
+    var formatMoney = function (money) {
+        money = parseFloat(money).toFixed(2);
+        var intVal = money.substr(0, money.indexOf("."));
+        intVal = convertToIndianCurrency(intVal);
+        var decimalVal = money.substr(money.indexOf(".") + 1);
+        return intVal + "." + decimalVal;
+    };
+
+    var nodeListForEach = function (list, callback) {
+        for (var i = 0; i < list.length; i++) {
+            callback(list[i], i);
+        }
+    };
 
     return {
         getDOMStrings: function () {
@@ -93,7 +101,10 @@ UIController = (function () {
             HTML = HTML.replace("%id%", itemData.id);
             HTML = HTML.replace("%desc%", itemData.description);
             HTML = HTML.replace("%val%", formatMoney(itemData.value));
-            HTML = HTML.replace("%percen%", formatPercentage(itemData.percentage));
+            HTML = HTML.replace(
+                "%percen%",
+                formatPercentage(itemData.percentage)
+            );
 
             document
                 .querySelector(className)
@@ -109,36 +120,58 @@ UIController = (function () {
             }
         },
 
-        updateBudget:function(income,expenses){
+        updateBudget: function (income, expenses) {
             var type;
-            if(income==expenses)
-                type="  ";
-            else if(income>expenses)
-                type='+ '
-            else    
-                type='- ';
+            if (income == expenses) type = "  ";
+            else if (income > expenses) type = "+ ";
+            else type = "- ";
 
-            document.querySelector(DOMStrings.budget_label).textContent=type+ formatMoney(Math.abs(income-expenses));
+            document.querySelector(DOMStrings.budget_label).textContent =
+                type + formatMoney(Math.abs(income - expenses));
 
-            document.querySelector(DOMStrings.budget_income_label).textContent="+ "+formatMoney(income);
-            document.querySelector(DOMStrings.budget_expenses_label).textContent="- "+formatMoney(expenses);
+            document.querySelector(DOMStrings.budget_income_label).textContent =
+                "+ " + formatMoney(income);
+            document.querySelector(
+                DOMStrings.budget_expenses_label
+            ).textContent = "- " + formatMoney(expenses);
 
-            if(income>0){
-                document.querySelector(DOMStrings.budget_expenses_percent).textContent=formatPercentage(Math.round((expenses/income)*100));
-            }
-            else{
-                document.querySelector(DOMStrings.budget_expenses_percent).textContent="---"
+            if (income > 0) {
+                document.querySelector(
+                    DOMStrings.budget_expenses_percent
+                ).textContent = formatPercentage(
+                    Math.round((expenses / income) * 100)
+                );
+            } else {
+                document.querySelector(
+                    DOMStrings.budget_expenses_percent
+                ).textContent = "---";
             }
         },
 
-        displayTime:function(month,year){
-            document.querySelector(DOMStrings.time_label).textContent=month+" "+year
+        displayTime: function (month, year) {
+            document.querySelector(DOMStrings.time_label).textContent =
+                month + " " + year;
         },
 
-        removeList:function(id){
-            var node=document.getElementById(id);
+        removeList: function (id) {
+            var node = document.getElementById(id);
             node.parentElement.removeChild(node);
         },
 
+        changeBtns: function (event) {
+            var fields = document.querySelectorAll(
+                DOMStrings.desc_type +
+                    "," +
+                    DOMStrings.desc +
+                    "," +
+                    DOMStrings.desc_value
+            );
+
+            nodeListForEach(fields, function (cur) {
+                cur.classList.toggle("red-focus");
+            });
+
+            document.querySelector(DOMStrings.addBtn).classList.toggle("red");
+        },
     };
 })();

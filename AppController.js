@@ -50,6 +50,7 @@ AppController = (function (BudgetCntl, UICntl) {
     }
 
     addEventController = function () {
+        // add
         document
             .querySelector(DOMStrings.addBtn)
             .addEventListener("click", ctrlAddItem);
@@ -60,9 +61,13 @@ AppController = (function (BudgetCntl, UICntl) {
             }
         });
 
+        // delete
         document
             .querySelector(DOMStrings.container)
             .addEventListener("click", cntrlDeleteItem);
+
+        // ux
+        document.querySelector(DOMStrings.typeOption).addEventListener('change',UICntl.changeBtns);
     };
 
     function cntrlDeleteItem(event) {
