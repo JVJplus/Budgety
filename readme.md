@@ -15,7 +15,7 @@ This section of the course teaches about module pattern and IIFEs.
 
 The HTML and CSS code involved in this project were pre-written by Mr. Schmedtmann.
 
-We Had to write the JS code after watching the videos.
+We had to write the JS code after watching the videos.
 
 ## Pleaned features
 * add a button to clear all incomes and/or expenses
