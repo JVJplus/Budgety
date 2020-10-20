@@ -95,10 +95,22 @@ AppController = (function (BudgetCntl, UICntl) {
     };
 
     function changeToSentenceCase(event){
-        // if alpahabet h toh uppercase me change karo
-        // TODO : https://stackoverflow.com/questions/30098133/replace-char-onkeypress
-        // else auto format
-        UICntl.formatDescription();
+        // if alpahabet h toh uppercase me change karo and caret default position me dal do
+
+        // if is not alphabet return, ctrl+v ke liye bhi
+        var keyCode=event.keyCode;
+        if(!(keyCode>=65&&keyCode<=90&&event.ctrlKey==false)){
+            return;
+        }
+
+        event.preventDefault(); /* Dont print the character */
+        var key=event.key;
+        var caret=this.selectionStart;
+        var newText=this.value.substr(0,caret)+key+this.value.substr(caret);
+
+        this.value=UICntl.changeToSentenceCase(newText);
+        this.selectionStart=caret+1;
+        this.selectionEnd=caret+1;
     };
 
     function cntrlValueSign(event) {

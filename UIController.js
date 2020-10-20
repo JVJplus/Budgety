@@ -219,12 +219,7 @@ UIController = (function () {
             }
         },
 
-        formatDescription:function(){
-            var ele=document.querySelector(DOMStrings.desc);
-            var val=ele.value;
-            val=changeToSentenceCase(val);
-            ele.value=val;
-        },
+        changeToSentenceCase,
         
         preventNegativeValue:function(e){
             var ele=document.querySelector(DOMStrings.desc_value);
