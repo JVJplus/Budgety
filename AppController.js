@@ -5,7 +5,21 @@ AppController = (function (BudgetCntl, UICntl) {
     function ctrlAddItem() {
         var inputs = UICntl.getInputs();
 
-        if (!inputs.desc || isNaN(inputs.value)) return;
+        if (!inputs.desc){
+            document.querySelector(DOMStrings.desc).focus();
+            return;
+        } 
+
+        if(isNaN(inputs.value)){
+            var ele=document.querySelector(DOMStrings.desc_value);
+            ele.focus();
+            
+            // FIXME: Doesnt wrong for input "12e" as input field is taking number only.
+            // is some input is wrong
+            if(ele.value.length)
+                ele.style.color='red';
+            return;
+        }
 
         var itemData = BudgetCntl.addItem(inputs);
         UICntl.clearFields();
@@ -13,19 +27,19 @@ AppController = (function (BudgetCntl, UICntl) {
 
         updatePercentages();
         updateBudget();
-    }
+    };
 
     function updatePercentages() {
         BudgetCntl.updateExpensesPercentages();
         var percentages = BudgetCntl.getPercentages();
         UICntl.updatePercentages(percentages);
-    }
+    };
 
     function updateBudget() {
         var income = BudgetCntl.getIncome();
         var expenses = BudgetCntl.getExpenses();
         UICntl.updateBudget(income, expenses);
-    }
+    };
 
     function updateTime() {
         var time = new Date();
@@ -47,7 +61,7 @@ AppController = (function (BudgetCntl, UICntl) {
         var year = time.getFullYear();
 
         UICntl.displayTime(month, year);
-    }
+    };
 
     addEventController = function () {
         // add
@@ -85,7 +99,7 @@ AppController = (function (BudgetCntl, UICntl) {
         // TODO : https://stackoverflow.com/questions/30098133/replace-char-onkeypress
         // else auto format
         UICntl.formatDescription();
-    }
+    };
 
     function cntrlValueSign(event) {
         // NOTE: keydown doesnt work because in android keyCode returned is always 229.  https://stackoverflow.com/questions/36753548/keycode-on-android-is-always-229
@@ -96,7 +110,7 @@ AppController = (function (BudgetCntl, UICntl) {
         
         event.preventDefault(); /* Dont display in value */        
         UICntl.changeType(key);
-    }
+    };
 
     function cntrlDeleteItem(event) {
         if (
@@ -116,7 +130,7 @@ AppController = (function (BudgetCntl, UICntl) {
         UICntl.removeList(elementID);
         updateBudget();
         updatePercentages();
-    }
+    };
 
     return {
         init: function () {
