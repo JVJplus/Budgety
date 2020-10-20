@@ -1,4 +1,4 @@
-# Budget-app-JS
+# Budget-App-JS
 
 ## Live Demo
 https://jvjplus.github.io/Budgety/
@@ -8,7 +8,7 @@ https://jvjplus.github.io/Budgety/
 * CSS3
 * Vanilla JavaScript
 
-## General info
+## General Info
 This is a budgeting app that calculates a budget based on a list of income and expenses.
 App was created as part of [Jonas Schmedtmann's JavaScript course on Udemy](https://www.udemy.com/the-complete-javascript-course/learn/v4/overview).
 This section of the course teaches about module pattern and IIFEs.
@@ -17,7 +17,7 @@ The HTML and CSS code involved in this project were pre-written by Mr. Schmedtma
 
 We had to write the JS code after watching the videos.
 
-## Pleaned features
+## Features To Add
 * Add time when added to list
 * Option to edit description
 * Undo Option when delete some list item
