@@ -16,6 +16,9 @@
         <title>Budgety</title>
         <!-- TODO: -->
         <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     </head>
     <body>
         <div class="top">
@@ -56,11 +59,13 @@
                         type="text"
                         class="add__description"
                         placeholder="Add description"
+                        required
                     />
                     <input
                         type="number"
                         class="add__value"
                         placeholder="Value"
+                        required
                     />
                     <button class="add__btn">
                         <i class="ion-ios-checkmark-outline"></i>
@@ -136,16 +141,11 @@
 </html>
 
 <!-- 
-    TODO: 
+    FIXME :
 
-*make responsive
-*title case me hi description.
-*if - is added in value check type to expense and if + is added then to income
+*FIX ON ANDORID: if - is added in value check type to expense and if + is added then to income
+*title case me hi description on the go of input.
 *Add Indian style comma in value input at time of input itself!
-*change fonts
-*add time when added to list
-*option to edit description
-*Undo Option when delete some list item
-*Mini-FLoating Calculator can be added.
-*Experiemnet keypress preventEvent and autochange to indian style money input
+*notify if any field is not inputted.
+
 -->

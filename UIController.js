@@ -219,7 +219,7 @@ UIController = (function () {
             }
         },
 
-        handleDescriptionText:function(event){
+        formatDescription:function(){
             var ele=document.querySelector(DOMStrings.desc);
             var val=ele.value;
             val=changeToSentenceCase(val);

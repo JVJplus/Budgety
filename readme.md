@@ -18,9 +18,12 @@ The HTML and CSS code involved in this project were pre-written by Mr. Schmedtma
 We had to write the JS code after watching the videos.
 
 ## Pleaned features
-* add a button to clear all incomes and/or expenses
-* use ES6 standards as much as possible
-* add webpack in it, and separat all the modules
+* Add time when added to list
+* Option to edit description
+* Undo Option when delete some list item
+* Mini-FLoating Calculator can be added.
+* Add a button to clear all incomes and/or expenses
+* Use ES6 standards as much as possible
+* Add webpack in it, and separate all the modules
 
-
-<!-- Add the image Architecture one! -->
+![Architecture of App](Architecture.png "Architecture of App")

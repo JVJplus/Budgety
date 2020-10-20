@@ -77,12 +77,26 @@ AppController = (function (BudgetCntl, UICntl) {
             .addEventListener("keydown", cntrlValueSign);
         
         // Change Description to Sentence Case.
-        document.querySelector(DOMStrings.desc).addEventListener('keydown',UICntl.handleDescriptionText);        
+        document.querySelector(DOMStrings.desc).addEventListener('keydown',changeToSentenceCase);        
     };
+
+    function changeToSentenceCase(event){
+        // if alpahabet h toh uppercase me change karo
+        // TODO : https://stackoverflow.com/questions/30098133/replace-char-onkeypress
+        // else auto format
+        UICntl.formatDescription();
+    }
 
     function cntrlValueSign(event) {
         var key = event.key;
-        if (!(key == "-" || key == "+")) return true;
+        var keyCode = event.which || event.keyCode || event.key;
+
+        // NOTE: Doesn't work on android  
+        // https://stackoverflow.com/questions/36753548/keycode-on-android-is-always-229
+        var signsKeys=[109,107,187,189];
+        // if any other key than + and - then return
+        if (signsKeys.indexOf(keyCode)==-1) return true;
+        
         event.preventDefault(); /* Dont display in value */
         UICntl.changeType(key);
     }
