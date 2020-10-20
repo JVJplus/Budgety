@@ -75,6 +75,9 @@ AppController = (function (BudgetCntl, UICntl) {
         document
             .querySelector(DOMStrings.desc_value)
             .addEventListener("keydown", cntrlValueSign);
+        
+        // Change Description in Sentence Case.
+        document.querySelector(DOMStrings.desc).addEventListener('keydown',UICntl.handleDescriptionText);
     };
 
     function cntrlValueSign(event) {

@@ -57,6 +57,28 @@ UIController = (function () {
         }
     };
 
+    function changeToSentenceCase(text) {
+        var result = "";
+        var sentenceStart = true;
+        for (i = 0; i < text.length; i++) {
+            var ch = text.charAt(i);
+
+            if (sentenceStart && ch.match(/^\S$/)) {
+                ch = ch.toUpperCase();
+                sentenceStart = false;
+            } else {
+                ch = ch.toLowerCase();
+            }
+
+            if (ch.match(/^[.!?]$/)) {
+                sentenceStart = true;
+            }
+
+            result += ch;
+        }
+        return result;
+    }
+
     return {
         getDOMStrings: function () {
             return DOMStrings;
@@ -171,7 +193,6 @@ UIController = (function () {
                     DOMStrings.desc_value
             );
             if (type == "+" || type == "inc") {
-
                 nodeListForEach(fields, function (cur) {
                     cur.classList.remove("red-focus");
                 });
@@ -184,9 +205,7 @@ UIController = (function () {
                     cur.classList.add("red-focus");
                 });
 
-                document
-                    .querySelector(DOMStrings.addBtn)
-                    .classList.add("red");
+                document.querySelector(DOMStrings.addBtn).classList.add("red");
             }
         },
 
@@ -199,5 +218,12 @@ UIController = (function () {
                 this.changeOutlines("-");
             }
         },
+
+        handleDescriptionText:function(event){
+            var ele=document.querySelector(DOMStrings.desc);
+            var val=ele.value;
+            val=changeToSentenceCase(val);
+            ele.value=val;
+        }
     };
 })();
