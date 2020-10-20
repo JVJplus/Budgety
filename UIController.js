@@ -158,7 +158,11 @@ UIController = (function () {
             node.parentElement.removeChild(node);
         },
 
-        changeBtns: function (event) {
+        changeOutlines: function (event) {
+            var type = event;
+            if (typeof event === "object")
+                type = document.querySelector(DOMStrings.desc_type).value;
+
             var fields = document.querySelectorAll(
                 DOMStrings.desc_type +
                     "," +
@@ -166,12 +170,34 @@ UIController = (function () {
                     "," +
                     DOMStrings.desc_value
             );
+            if (type == "+" || type == "inc") {
 
-            nodeListForEach(fields, function (cur) {
-                cur.classList.toggle("red-focus");
-            });
+                nodeListForEach(fields, function (cur) {
+                    cur.classList.remove("red-focus");
+                });
 
-            document.querySelector(DOMStrings.addBtn).classList.toggle("red");
+                document
+                    .querySelector(DOMStrings.addBtn)
+                    .classList.remove("red");
+            } else {
+                nodeListForEach(fields, function (cur) {
+                    cur.classList.add("red-focus");
+                });
+
+                document
+                    .querySelector(DOMStrings.addBtn)
+                    .classList.add("red");
+            }
+        },
+
+        changeType: function (key) {
+            if (key == "+") {
+                document.querySelector(DOMStrings.desc_type).selectedIndex = 0;
+                this.changeOutlines("+");
+            } else {
+                document.querySelector(DOMStrings.desc_type).selectedIndex = 1;
+                this.changeOutlines("-");
+            }
         },
     };
 })();

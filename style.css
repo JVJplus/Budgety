@@ -33,7 +33,7 @@ body {
 
 .top {
     height: 40vh;
-    background-image: linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.35)), url(back.png);
+    background-image: linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.35)), url(back.jpg);
     background-size: cover;
     background-position: center;
     position: relative;
@@ -82,8 +82,9 @@ body {
 .budget__expenses--text {
     float: left;
     font-size: 13px;
-    color: #444;
+    color: rgb(51, 51, 49);
     margin-top: 2px;
+    font-weight: 600;
 }
 
 .budget__income--value,

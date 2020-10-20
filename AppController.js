@@ -67,8 +67,23 @@ AppController = (function (BudgetCntl, UICntl) {
             .addEventListener("click", cntrlDeleteItem);
 
         // ux
-        document.querySelector(DOMStrings.typeOption).addEventListener('change',UICntl.changeBtns);
+        document
+            .querySelector(DOMStrings.typeOption)
+            .addEventListener("change", UICntl.changeOutlines);
+
+        // value change a/c to sign
+        document
+            .querySelector(DOMStrings.desc_value)
+            .addEventListener("keydown", cntrlValueSign);
     };
+
+    function cntrlValueSign(event) {
+        var key = event.key;
+        if (!(key == "-" || key == "+")) return true;
+
+        event.preventDefault(); /* Dont display in value */
+        UICntl.changeType(key);
+    }
 
     function cntrlDeleteItem(event) {
         if (
@@ -84,7 +99,7 @@ AppController = (function (BudgetCntl, UICntl) {
         type = type == "income" ? "inc" : "exp";
         var id = elementID.split("-")[1];
 
-        BudgetCntl.removeList(type,id);
+        BudgetCntl.removeList(type, id);
         UICntl.removeList(elementID);
         updateBudget();
         updatePercentages();
