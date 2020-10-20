@@ -28,7 +28,6 @@ We had to write the JS code after watching the videos.
 
 ## To Fix
 
-* Notify if any field is not inputted.
 * Title case me hi description on the go of input.
 * Add Indian style comma in value input at time of input itself!
 
