@@ -18,10 +18,10 @@ UIController = (function () {
     };
 
     var formatPercentage = function (percent) {
-        if (percent == 0) return "0 %";
-        if (percent == -1 || percent == Infinity) return "- ---";
-        if (percent > 999) return "> 1k" + " %";
-        return "- " + percent + " %";
+        if (percent == 0) return "0%";
+        if (percent == -1 || percent == Infinity) return "---";
+        if (percent > 999) return ">1k" + "%";
+        return percent + "%";
     };
 
     function convertToIndianCurrency(money) {
