@@ -26,5 +26,12 @@ We had to write the JS code after watching the videos.
 * Use ES6 standards as much as possible
 * Add webpack in it, and separate all the modules
 
+## To Fix
+
+* FIX ON ANDORID: if - is added in value check type to expense and if + is added then to income
+* Title case me hi description on the go of input.
+* Add Indian style comma in value input at time of input itself!
+* Notify if any field is not inputted.
+
 ## Architecture of App
 ![Architecture of App](Architecture.png "Architecture of App")
