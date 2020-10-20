@@ -226,5 +226,11 @@ UIController = (function () {
             ele.value=val;
         },
         
+        preventNegativeValue:function(e){
+            var ele=document.querySelector(DOMStrings.desc_value);
+            var val=ele.value;
+            if(val<0)
+                ele.value=0;
+        }
     };
 })();

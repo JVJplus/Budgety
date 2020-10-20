@@ -72,9 +72,9 @@ AppController = (function (BudgetCntl, UICntl) {
             .addEventListener("change", UICntl.changeOutlines);
 
         // value change a/c to sign
-        document
-            .querySelector(DOMStrings.desc_value)
-            .addEventListener("keydown", cntrlValueSign);
+        document.querySelector(DOMStrings.desc_value).addEventListener("textInput", cntrlValueSign);
+        //prevent -ve value change via side btn of input div.
+        document.querySelector(DOMStrings.desc_value).addEventListener("change", UICntl.preventNegativeValue);
         
         // Change Description to Sentence Case.
         document.querySelector(DOMStrings.desc).addEventListener('keydown',changeToSentenceCase);        
@@ -88,16 +88,13 @@ AppController = (function (BudgetCntl, UICntl) {
     }
 
     function cntrlValueSign(event) {
-        var key = event.key;
-        var keyCode = event.which || event.keyCode || event.key;
+        // NOTE: keydown doesnt work because in android keyCode returned is always 229.  https://stackoverflow.com/questions/36753548/keycode-on-android-is-always-229
 
-        // NOTE: Doesn't work on android  
-        // https://stackoverflow.com/questions/36753548/keycode-on-android-is-always-229
-        var signsKeys=[109,107,187,189];
-        // if any other key than + and - then return
-        if (signsKeys.indexOf(keyCode)==-1) return true;
+        //// if any other key than + and - then return 
+        var key=event.data;
+        if (!(key=='+' || key=='-')) return true;
         
-        event.preventDefault(); /* Dont display in value */
+        event.preventDefault(); /* Dont display in value */        
         UICntl.changeType(key);
     }
 
