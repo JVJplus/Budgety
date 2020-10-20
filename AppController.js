@@ -76,14 +76,13 @@ AppController = (function (BudgetCntl, UICntl) {
             .querySelector(DOMStrings.desc_value)
             .addEventListener("keydown", cntrlValueSign);
         
-        // Change Description in Sentence Case.
-        document.querySelector(DOMStrings.desc).addEventListener('keydown',UICntl.handleDescriptionText);
+        // Change Description to Sentence Case.
+        document.querySelector(DOMStrings.desc).addEventListener('keydown',UICntl.handleDescriptionText);        
     };
 
     function cntrlValueSign(event) {
         var key = event.key;
         if (!(key == "-" || key == "+")) return true;
-
         event.preventDefault(); /* Dont display in value */
         UICntl.changeType(key);
     }

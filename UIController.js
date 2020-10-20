@@ -224,6 +224,7 @@ UIController = (function () {
             var val=ele.value;
             val=changeToSentenceCase(val);
             ele.value=val;
-        }
+        },
+        
     };
 })();
