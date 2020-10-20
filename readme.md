@@ -26,5 +26,5 @@ We had to write the JS code after watching the videos.
 * Use ES6 standards as much as possible
 * Add webpack in it, and separate all the modules
 
-##Architecture of App
+## Architecture of App
 ![Architecture of App](Architecture.png "Architecture of App")
