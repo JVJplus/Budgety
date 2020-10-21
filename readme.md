@@ -28,6 +28,9 @@ We had to write the JS code after watching the videos.
 
 ## To Fix
 
+<!-- not working in android -->
+<!-- Fix long sentence hidden issue in desc. use setitmeout to diable preventevent -->
+* Title case me hi description on the go of input.
 * Add Indian style comma in value input at time of input itself!
 
 ## Architecture of App

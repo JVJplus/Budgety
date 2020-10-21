@@ -103,7 +103,9 @@ AppController = (function (BudgetCntl, UICntl) {
             return;
         }
 
+        //cant use preventDefault as its hidding the typed char in long sentences. so use setTimeOut.
         event.preventDefault(); /* Dont print the character */
+
         var key=event.key;
         var caret=this.selectionStart;
         var newText=this.value.substr(0,caret)+key+this.value.substr(caret);
@@ -111,6 +113,17 @@ AppController = (function (BudgetCntl, UICntl) {
         this.value=UICntl.changeToSentenceCase(newText);
         this.selectionStart=caret+1;
         this.selectionEnd=caret+1;
+
+        // try scrolling till view of hidden texts in long sentences
+        // if is for handling the case when some words are inserted in between of sentences.
+        if(this.scrollLeft>=30 || caret>=30){
+            this.scrollLeft=this.scrollLeft+10;
+        }
+
+        // remove the repeat key pressed by event
+        // not working properly as UX. shadows are seen.
+        // var domEle=this;
+        // setTimeout(()=>{domEle.value = domEle.value.substr(0,domEle.value.length-1);});
     };
 
     function cntrlValueSign(event) {
