@@ -115,7 +115,7 @@ AppController = (function (BudgetCntl, UICntl) {
 
         // try scrolling till view of hidden texts in long sentences
         // if is for handling the case when some words are inserted in between of sentences.
-        if(this.scrollLeft>=30 || caret>=30){
+        if(this.scrollLeft>=30 || caret>=10){
             this.scrollLeft=this.scrollLeft+10;
         }
 
