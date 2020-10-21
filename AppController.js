@@ -99,7 +99,6 @@ AppController = (function (BudgetCntl, UICntl) {
 
         var key=event.data;
         if(! (  (key>='a' && key<='z')||(key>='A'&&key<='Z') ) ){
-            console.log('returned');
             return;
         }
 
