@@ -117,7 +117,7 @@ AppController = (function (BudgetCntl, UICntl) {
     }
 
     function changeToSentenceCase(event) {
-        // NOTE: This doesn't handle the cases of pasting, deleting via backspace and delete, cut etc '.' and automatically transforming text.
+        // NOTE: This doesn't handle the cases of pasting, deleting via backspace and delete, cut etc '.' and automatically transforming text. So, new handleModification function was added.
 
         var key = event.data;
 
