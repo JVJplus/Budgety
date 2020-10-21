@@ -87,7 +87,7 @@ UIController = (function () {
         getInputs: function () {
             var type, desc, value;
             type = document.querySelector(DOMStrings.desc_type).value;
-            desc = document.querySelector(DOMStrings.desc).value;
+            desc = changeToSentenceCase(document.querySelector(DOMStrings.desc).value);
             value = parseFloat(
                 document.querySelector(DOMStrings.desc_value).value
             );

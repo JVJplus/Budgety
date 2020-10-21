@@ -91,22 +91,21 @@ AppController = (function (BudgetCntl, UICntl) {
         document.querySelector(DOMStrings.desc_value).addEventListener("change", UICntl.preventNegativeValue);
         
         // Change Description to Sentence Case.
-        document.querySelector(DOMStrings.desc).addEventListener('keydown',changeToSentenceCase);        
+        document.querySelector(DOMStrings.desc).addEventListener("textInput",changeToSentenceCase);        
     };
 
     function changeToSentenceCase(event){
         // if alpahabet h toh uppercase me change karo and caret default position me dal do
 
-        // if is not alphabet return, ctrl+v ke liye bhi
-        var keyCode=event.keyCode;
-        if(!(keyCode>=65&&keyCode<=90&&event.ctrlKey==false)){
+        var key=event.data;
+        if(! (  (key>='a' && key<='z')||(key>='A'&&key<='Z') ) ){
+            console.log('returned');
             return;
         }
 
         //cant use preventDefault as its hidding the typed char in long sentences. so use setTimeOut.
         event.preventDefault(); /* Dont print the character */
 
-        var key=event.key;
         var caret=this.selectionStart;
         var newText=this.value.substr(0,caret)+key+this.value.substr(caret);
 
