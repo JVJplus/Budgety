@@ -5,19 +5,18 @@ AppController = (function (BudgetCntl, UICntl) {
     function ctrlAddItem() {
         var inputs = UICntl.getInputs();
 
-        if (!inputs.desc){
+        if (!inputs.desc) {
             document.querySelector(DOMStrings.desc).focus();
             return;
-        } 
+        }
 
-        if(isNaN(inputs.value)){
-            var ele=document.querySelector(DOMStrings.desc_value);
+        if (isNaN(inputs.value)) {
+            var ele = document.querySelector(DOMStrings.desc_value);
             ele.focus();
-            
+
             // FIXME: Doesnt wrong for input "12e" as input field is taking number only.
             // is some input is wrong
-            if(ele.value.length)
-                ele.style.color='red';
+            if (ele.value.length) ele.style.color = "red";
             return;
         }
 
@@ -27,19 +26,19 @@ AppController = (function (BudgetCntl, UICntl) {
 
         updatePercentages();
         updateBudget();
-    };
+    }
 
     function updatePercentages() {
         BudgetCntl.updateExpensesPercentages();
         var percentages = BudgetCntl.getPercentages();
         UICntl.updatePercentages(percentages);
-    };
+    }
 
     function updateBudget() {
         var income = BudgetCntl.getIncome();
         var expenses = BudgetCntl.getExpenses();
         UICntl.updateBudget(income, expenses);
-    };
+    }
 
     function updateTime() {
         var time = new Date();
@@ -61,7 +60,7 @@ AppController = (function (BudgetCntl, UICntl) {
         var year = time.getFullYear();
 
         UICntl.displayTime(month, year);
-    };
+    }
 
     addEventController = function () {
         // add
@@ -86,54 +85,74 @@ AppController = (function (BudgetCntl, UICntl) {
             .addEventListener("change", UICntl.changeOutlines);
 
         // value change a/c to sign
-        document.querySelector(DOMStrings.desc_value).addEventListener("textInput", cntrlValueSign);
+        document
+            .querySelector(DOMStrings.desc_value)
+            .addEventListener("textInput", cntrlValueSign);
         //prevent -ve value change via side btn of input div.
-        document.querySelector(DOMStrings.desc_value).addEventListener("change", UICntl.preventNegativeValue);
-        
+        document
+            .querySelector(DOMStrings.desc_value)
+            .addEventListener("change", UICntl.preventNegativeValue);
+
         // Change Description to Sentence Case.
-        document.querySelector(DOMStrings.desc).addEventListener("textInput",changeToSentenceCase);        
+        document
+            .querySelector(DOMStrings.desc)
+            .addEventListener("textInput", changeToSentenceCase);
+        document
+            .querySelector(DOMStrings.desc)
+            .addEventListener("keydown", handleModification);
     };
 
-    function changeToSentenceCase(event){
-        // if alpahabet h toh uppercase me change karo and caret default position me dal do
+    function handleModification(event) {
+        // NOTE: Doesn't handle the case when cutted.
+        function dolater() {
+            if(event.ctrlKey || event.shiftKey)
+                return;
 
-        var key=event.data;
-        if(! (  (key>='a' && key<='z')||(key>='A'&&key<='Z') ) ){
-            return;
+            obj=document.querySelector(DOMStrings.desc);
+            var caret = obj.selectionStart;
+            obj.value = UICntl.changeToSentenceCase(obj.value);
+            obj.selectionStart = obj.selectionEnd = caret;
         }
+        setTimeout(dolater);
+    }
 
-        //cant use preventDefault as its hidding the typed char in long sentences. so use setTimeOut.
+    function changeToSentenceCase(event) {
+        // NOTE: This doesn't handle the cases of pasting, deleting via backspace and delete, cut etc '.' and automatically transforming text.
+
+        var key = event.data;
+
         event.preventDefault(); /* Dont print the character */
 
-        var caret=this.selectionStart;
-        var newText=this.value.substr(0,caret)+key+this.value.substr(caret);
+        var caret = this.selectionStart;
+        var newText =
+            this.value.substr(0, caret) + key + this.value.substr(caret);
 
-        this.value=UICntl.changeToSentenceCase(newText);
-        this.selectionStart=caret+1;
-        this.selectionEnd=caret+1;
+        this.value = UICntl.changeToSentenceCase(newText);
+        this.selectionStart = caret + 1;
+        this.selectionEnd = caret + 1;
 
         // try scrolling till view of hidden texts in long sentences
         // if is for handling the case when some words are inserted in between of sentences.
-        if(this.scrollLeft>=30 || caret>=10){
-            this.scrollLeft=this.scrollLeft+10;
+        if (this.scrollLeft >= 30 || caret >= 10) {
+            this.scrollLeft = this.scrollLeft + 10;
         }
 
         // remove the repeat key pressed by event
         // not working properly as UX. shadows are seen.
         // var domEle=this;
         // setTimeout(()=>{domEle.value = domEle.value.substr(0,domEle.value.length-1);});
-    };
+    }
 
     function cntrlValueSign(event) {
         // NOTE: keydown doesnt work because in android keyCode returned is always 229.  https://stackoverflow.com/questions/36753548/keycode-on-android-is-always-229
 
-        //// if any other key than + and - then return 
-        var key=event.data;
-        if (!(key=='+' || key=='-')) return true;
-        
-        event.preventDefault(); /* Dont display in value */        
+        //// if any other key than + and - then return
+        var key = event.data;
+        if (!(key == "+" || key == "-")) return true;
+
+        event.preventDefault(); /* Dont display in value */
         UICntl.changeType(key);
-    };
+    }
 
     function cntrlDeleteItem(event) {
         if (
@@ -153,7 +172,7 @@ AppController = (function (BudgetCntl, UICntl) {
         UICntl.removeList(elementID);
         updateBudget();
         updatePercentages();
-    };
+    }
 
     return {
         init: function () {
