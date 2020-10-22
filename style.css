@@ -48,7 +48,8 @@ body {
 
 .budget {
     position: absolute;
-    width: 350px;
+    /* width: 350px; */
+    width: 100%;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -74,6 +75,8 @@ body {
 .budget__expenses {
     padding: 12px;
     text-transform: uppercase;
+    width: 350px;
+    margin: 0 auto;
 }
 
 .budget__income {
@@ -161,7 +164,7 @@ body {
     width: 400px;
 }
 .add__value {
-    width: 100px;
+    width: 150px;
 }
 
 .add__btn {
@@ -312,66 +315,86 @@ h2 {
     font-weight: 900;
 }
 
+.hide-in-desktop {
+    display: none;
+}
+
 @media only screen and (max-width: 600px) {
-    .top{
+    .top {
         height: 300px;
     }
 
-    .budget__value{
+    .budget__value {
         font-size: 42px;
         margin-top: 20px;
         margin-bottom: 20px;
     }
 
     .budget {
-        width: 70vw;
+        width: 100%;
     }
 
-    .add__container{
+    .budget__income,
+    .budget__expenses {
+        width: 80%;
+    }
+
+    .add__container {
         width: 100%;
         margin: 0;
         padding: 0;
+        text-align: left;
     }
 
-    .add__type{
-        width: 15%;
+    .add__type {
+        width: 100%;
         margin: 0;
         font-size: 14px;
     }
 
-    .add__description{
-        width: 50%;
+    .add__description {
+        width: 100%;
         margin: 0;
         font-size: 14px;
+        margin-top: 7px;
     }
-    
-    .add__value{
-        width: 21%;
+
+    .add__value {
+        width: 75%;
         margin: 0;
         font-size: 14px;
+        margin-top: 7px;
     }
-    
-    .add__btn{
-        width: 10%;
+
+    .add__btn {
+        width: 20%;
         margin: 0;
+        margin-left: 5px;
+        margin-top: 5px;
+        -webkit-tap-highlight-color:  rgba(255, 255, 255, 0); 
     }
 
     .budget__title {
         font-size: 16px;
     }
 
-    .container{
+    .container {
         width: 100%;
         margin-top: 20px;
     }
 
-    .expenses,.income{
-        margin-left:16px;
+    .expenses,
+    .income {
+        margin-left: 16px;
         width: 90%;
         margin-right: 0;
     }
 
-    .expenses{
-        margin-top: 70px;
+    .expenses {
+        margin-top: 50px;
+    }
+
+    .hide-in-desktop {
+        display: block;
     }
 }

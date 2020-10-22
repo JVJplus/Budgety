@@ -25,10 +25,11 @@ We had to write the JS code after watching the videos.
 * Add a button to clear all incomes and/or expenses
 * Use ES6 standards as much as possible
 * Add webpack in it, and separate all the modules
+* Add Quantity Option
 
 ## To Fix
-
-* Add Indian style comma in value input at time of input itself!
+* reset designs, width reduce, remove pre text
+* Try to find one and push a issue! :P
 
 ## Architecture of App
 ![Architecture of App](Architecture.png "Architecture of App")
