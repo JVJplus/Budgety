@@ -25,6 +25,7 @@ UIController = (function () {
     };
 
     function convertToIndianCurrency(money) {
+        if(money.length<1) return money;
         var lastChar = money[money.length - 1];
         // 123456=1,23,456
         // 12345=12,345
@@ -89,7 +90,7 @@ UIController = (function () {
             type = document.querySelector(DOMStrings.desc_type).value;
             desc = changeToSentenceCase(document.querySelector(DOMStrings.desc).value);
             value = parseFloat(
-                document.querySelector(DOMStrings.desc_value).value
+                document.querySelector(DOMStrings.desc_value).value.replace(/[,]/g, "")
             );
 
             return {
@@ -221,11 +222,6 @@ UIController = (function () {
 
         changeToSentenceCase,
         
-        preventNegativeValue:function(e){
-            var ele=document.querySelector(DOMStrings.desc_value);
-            var val=ele.value;
-            if(val<0)
-                ele.value=0;
-        }
+        convertToIndianCurrency,
     };
 })();

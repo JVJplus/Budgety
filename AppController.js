@@ -14,9 +14,15 @@ AppController = (function (BudgetCntl, UICntl) {
             var ele = document.querySelector(DOMStrings.desc_value);
             ele.focus();
 
-            // FIXME: Doesnt wrong for input "12e" as input field is taking number only.
+            // FIXME: Doesnt wrong for input "." as input field is taking number only.
             // is some input is wrong
-            if (ele.value.length) ele.style.color = "red";
+            if (ele.value.length) {
+                ele.style.color = "red";
+                setTimeout(() => {
+                    ele.style.color = "inherit";
+                }, 500);
+            }
+
             return;
         }
 
@@ -88,27 +94,241 @@ AppController = (function (BudgetCntl, UICntl) {
         document
             .querySelector(DOMStrings.desc_value)
             .addEventListener("textInput", cntrlValueSign);
-        //prevent -ve value change via side btn of input div.
+
+        // use library: http://autonumeric.org/
+        // https://medium.com/outsystems-experts/javascript-events-unmasked-how-to-create-an-input-mask-for-mobile-fc0df165e8b2
+
+        // Handle Backspacing
         document
             .querySelector(DOMStrings.desc_value)
-            .addEventListener("change", UICntl.preventNegativeValue);
+            .addEventListener("keydown", handleValueModification);
+
+        // Auto Change To Indian Style.
+        document
+            .querySelector(DOMStrings.desc_value)
+            .addEventListener("textInput", changeToIndianStyle);
+
 
         // Change Description to Sentence Case.
         document
             .querySelector(DOMStrings.desc)
             .addEventListener("textInput", changeToSentenceCase);
+            
+        // Handle Backspacing
         document
             .querySelector(DOMStrings.desc)
-            .addEventListener("keydown", handleModification);
+            .addEventListener("keydown", handleDescModification);
     };
 
-    function handleModification(event) {
+    function changeToIndianStyle(event) {
+        var key = event.data;
+        function isDoubleDots() {
+            var isDotPresent = this.value.indexOf(".");
+            if (isDotPresent == -1) return false;
+            return key == ".";
+        }
+
+        if (event.ctrlKey || event.shiftKey) return;
+
+        // to handle case of selected all then replace all
+        if (
+            this.selectionStart == 0 &&
+            this.selectionEnd == this.value.length
+        ) {
+            this.value = "";
+            return;
+        }
+
+        // we will handle via adding key value manually!
+        event.preventDefault();
+        // ignore everything except numbers
+        if (/[^0-9.]/.test(key) || isDoubleDots.call(this)) {
+            return;
+        }
+
+        // add comma
+        var caret = this.selectionStart;
+        var oldValRaw =
+            this.value.substr(0, caret) + key + this.value.substr(caret);
+        var noOfDigitsBeforeCaret = oldValRaw
+            .substr(0, caret)
+            .replace(/[^\d]/g, "").length;
+        var oldVal = oldValRaw.replace(/[,]/g, "");
+
+        var intVal = oldVal,
+            decimalVal = "";
+        if (oldVal.indexOf(".") != -1) {
+            intVal = oldVal.substr(0, oldVal.indexOf("."));
+            decimalVal = oldVal.substr(oldVal.indexOf("."));
+        }
+
+        // prevent leading zeros
+        while (intVal.length && intVal[0] == "0") {
+            intVal = intVal.substr(1);
+            noOfDigitsBeforeCaret--;
+        }
+
+        intVal = UICntl.convertToIndianCurrency(intVal);
+        var newVal = intVal + decimalVal;
+
+        this.value = newVal;
+
+        if (key == ".") {
+            // in case of dots no of digis before caret should be same
+            setCaretAfterDigits(this, noOfDigitsBeforeCaret);
+            // and caret should be after .
+            this.selectionEnd = this.selectionStart = this.selectionEnd + 1;
+        } else {
+            setCaretAfterDigits(this, noOfDigitsBeforeCaret + 1);
+        }
+
+        // hortizontal scroll
+        if (this.scrollLeft >= 30 || caret >= 10) {
+            this.scrollLeft = this.scrollLeft + 10;
+        }
+    }
+
+    function setCaretAfterDigits(obj, digits) {
+        if (digits == 0) {
+            obj.selectionStart = obj.selectionEnd = 0;
+            return;
+        }
+
+        var cnt = 0,
+            s = obj.value;
+        for (var i = 0; i < s.length; i++) {
+            if (s[i] >= 0 && s[i] <= 9) {
+                cnt++;
+            }
+            if (cnt == digits) {
+                // obj.selectionStart = obj.selectionEnd = i + 1;
+                setCaretPosition(obj, i + 1, i + 1);
+                return;
+            }
+        }
+        obj.selectionStart = obj.selectionEnd = s.length;
+    }
+
+    function setCaretPosition(ctrl, start, end) {
+        // IE >= 9 and other browsers
+        if (ctrl.setSelectionRange) {
+            ctrl.focus();
+            ctrl.setSelectionRange(start, end);
+        }
+        // IE < 9
+        else if (ctrl.createTextRange) {
+            var range = ctrl.createTextRange();
+            range.collapse(true);
+            range.moveEnd("character", end);
+            range.moveStart("character", start);
+            range.select();
+        }
+    }
+
+    function handleValueModification(event) {
+        var oldObj = this;
+        var oldCaret = this.selectionStart;
+        var oldText = this.value;
+        var keyCode = event.keyCode;
+        var lengthBefore = this.value.length;
+        var noOfDigitsBeforeCaret = oldText
+            .substr(0, oldCaret)
+            .replace(/[^\d]/g, "").length;
+
+        function dolater() {
+            var obj = document.querySelector(DOMStrings.desc_value);
+
+            // handle 1st character should not be anything other than digits
+            obj.value = obj.value.replace(/[^0-9,.]/g, "");
+            var lengthAfter = obj.value.length;
+            var newText = obj.value;
+
+            if (event.ctrlKey || event.shiftKey) return;
+
+            var caretNew = obj.selectionStart;
+            var oldVal = obj.value.replace(/[,]/g, "");
+            var intVal = oldVal,
+                decimalVal = "";
+            if (oldVal.indexOf(".") != -1) {
+                intVal = oldVal.substr(0, oldVal.indexOf("."));
+                decimalVal = oldVal.substr(oldVal.indexOf("."));
+            }
+            intVal = UICntl.convertToIndianCurrency(intVal);
+            var newVal = intVal + decimalVal;
+            obj.value = newVal;
+
+            // delete
+            if (keyCode == 46) {
+                if (oldText[oldCaret] == ".") {
+                    // console.log('deleted -> .');
+                    setCaretAfterDigits(obj, noOfDigitsBeforeCaret);
+                } else if (oldText[oldCaret] == ",") {
+                    // console.log('deleted -> ,');
+                    obj.selectionEnd = obj.selectionStart = oldCaret + 1;
+                } else {
+                    // console.log('delete -> d');
+                    setCaretAfterDigits(obj, noOfDigitsBeforeCaret);
+                }
+            }
+            // backspace
+
+            if (keyCode == 8) {
+                if (
+                    oldCaret == 0 ||
+                    (oldCaret - 1 >= 0 && oldText[oldCaret - 1] == ".")
+                ) {
+                    // console.log('deleted <- .');
+                    setCaretAfterDigits(obj, noOfDigitsBeforeCaret);
+                } else if (oldCaret - 1 >= 0 && oldText[oldCaret - 1] == ",") {
+                    // console.log('deleted <- ,');
+                    obj.selectionEnd = obj.selectionStart = caretNew;
+                } else if(oldText.replace('[\D]','').length > newText.replace('[\D]','').length) {
+                    // console.log('delete <- d');
+                    setCaretAfterDigits(obj, noOfDigitsBeforeCaret - 1);
+                }
+            }
+
+            //add for android backspace, use trick that length will decrease on backspace, since keyCode will not work in android. on android everything returns 229.
+            
+            if (keyCode == 229) {
+                // handle .
+                // if new . is added
+                if(oldText.indexOf('.')==-1){
+                    var dotIndex=newVal.indexOf('.');
+                    if(dotIndex!=-1){
+                        setCaretPosition(obj, dotIndex+1,dotIndex+1);
+                    }
+                }
+                // if . is removed
+                else{
+                    var dotIndex=oldVal.indexOf('.');
+                    if(dotIndex==-1){
+                        setCaretAfterDigits(obj, noOfDigitsBeforeCaret);
+                    }
+                }
+
+                //handle ,
+                if (oldCaret - 1 >= 0 && oldText[oldCaret - 1] == ","){
+                    // console.log('deleted <- ,');
+                    obj.selectionEnd = obj.selectionStart = caretNew;
+                } 
+                else if (oldText.length>newText.length) {
+                    // console.log('delete <- d');
+                    // alert('ok doing');
+                    setCaretAfterDigits(obj, noOfDigitsBeforeCaret-1);
+                }
+            }
+
+        }
+        setTimeout(dolater);
+    }
+
+    function handleDescModification(event) {
         // NOTE: Doesn't handle the case when cutted.
         function dolater() {
-            if(event.ctrlKey || event.shiftKey)
-                return;
+            if (event.ctrlKey || event.shiftKey) return;
 
-            obj=document.querySelector(DOMStrings.desc);
+            obj = document.querySelector(DOMStrings.desc);
             var caret = obj.selectionStart;
             obj.value = UICntl.changeToSentenceCase(obj.value);
             obj.selectionStart = obj.selectionEnd = caret;
@@ -118,6 +338,16 @@ AppController = (function (BudgetCntl, UICntl) {
 
     function changeToSentenceCase(event) {
         // NOTE: This doesn't handle the cases of pasting, deleting via backspace and delete, cut etc '.' and automatically transforming text. So, new handleModification function was added.
+
+        if (event.ctrlKey || event.shiftKey) return;
+        // to handle case of selected all then replace all
+        if (
+            this.selectionStart == 0 &&
+            this.selectionEnd == this.value.length
+        ) {
+            this.value = "";
+            return;
+        }
 
         var key = event.data;
 
