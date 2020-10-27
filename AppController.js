@@ -103,6 +103,11 @@ AppController = (function (BudgetCntl, UICntl) {
         document
             .querySelector(DOMStrings.desc_value)
             .addEventListener("keydown", handleValueModification);
+        
+        // Handle Cut
+        document
+            .querySelector(DOMStrings.desc_value)
+            .addEventListener("cut", handleCutValue);
 
         // Auto Change To Indian Style.
         document
@@ -119,6 +124,10 @@ AppController = (function (BudgetCntl, UICntl) {
             .querySelector(DOMStrings.desc)
             .addEventListener("keydown", handleDescModification);
     };
+
+    function handleCutValue(event){
+        // Left TODO!
+    }
 
     function changeToIndianStyle(event) {
         var key = event.data;
