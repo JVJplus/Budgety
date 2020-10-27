@@ -90,7 +90,7 @@ UIController = (function () {
             type = document.querySelector(DOMStrings.desc_type).value;
             desc = changeToSentenceCase(document.querySelector(DOMStrings.desc).value);
             value = parseFloat(
-                document.querySelector(DOMStrings.desc_value).value.replaceAll(',','')
+                document.querySelector(DOMStrings.desc_value).value.replace(/[,]/g, "")
             );
 
             return {

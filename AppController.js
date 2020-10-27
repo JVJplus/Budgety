@@ -95,20 +95,25 @@ AppController = (function (BudgetCntl, UICntl) {
             .querySelector(DOMStrings.desc_value)
             .addEventListener("textInput", cntrlValueSign);
 
-        // Auto Change To Indian Style.
-        document
-            .querySelector(DOMStrings.desc_value)
-            .addEventListener("textInput", changeToIndianStyle);
+        // use library: http://autonumeric.org/
+        // https://medium.com/outsystems-experts/javascript-events-unmasked-how-to-create-an-input-mask-for-mobile-fc0df165e8b2
 
         // Handle Backspacing
         document
             .querySelector(DOMStrings.desc_value)
             .addEventListener("keydown", handleValueModification);
 
+        // Auto Change To Indian Style.
+        document
+            .querySelector(DOMStrings.desc_value)
+            .addEventListener("textInput", changeToIndianStyle);
+
+
         // Change Description to Sentence Case.
         document
             .querySelector(DOMStrings.desc)
             .addEventListener("textInput", changeToSentenceCase);
+            
         // Handle Backspacing
         document
             .querySelector(DOMStrings.desc)
@@ -116,10 +121,7 @@ AppController = (function (BudgetCntl, UICntl) {
     };
 
     function changeToIndianStyle(event) {
-        // NOTE: I worked very hard about week for this function, If you are reusing or referencing this now. Do ping me on any social site @jvjplus
-
         var key = event.data;
-
         function isDoubleDots() {
             var isDotPresent = this.value.indexOf(".");
             if (isDotPresent == -1) return false;
@@ -151,7 +153,7 @@ AppController = (function (BudgetCntl, UICntl) {
         var noOfDigitsBeforeCaret = oldValRaw
             .substr(0, caret)
             .replace(/[^\d]/g, "").length;
-        var oldVal = oldValRaw.replaceAll(",", "");
+        var oldVal = oldValRaw.replace(/[,]/g, "");
 
         var intVal = oldVal,
             decimalVal = "";
@@ -176,8 +178,11 @@ AppController = (function (BudgetCntl, UICntl) {
             setCaretAfterDigits(this, noOfDigitsBeforeCaret);
             // and caret should be after .
             this.selectionEnd = this.selectionStart = this.selectionEnd + 1;
-        } else setCaretAfterDigits(this, noOfDigitsBeforeCaret + 1);
+        } else {
+            setCaretAfterDigits(this, noOfDigitsBeforeCaret + 1);
+        }
 
+        // hortizontal scroll
         if (this.scrollLeft >= 30 || caret >= 10) {
             this.scrollLeft = this.scrollLeft + 10;
         }
@@ -196,11 +201,28 @@ AppController = (function (BudgetCntl, UICntl) {
                 cnt++;
             }
             if (cnt == digits) {
-                obj.selectionStart = obj.selectionEnd = i + 1;
+                // obj.selectionStart = obj.selectionEnd = i + 1;
+                setCaretPosition(obj, i + 1, i + 1);
                 return;
             }
         }
         obj.selectionStart = obj.selectionEnd = s.length;
+    }
+
+    function setCaretPosition(ctrl, start, end) {
+        // IE >= 9 and other browsers
+        if (ctrl.setSelectionRange) {
+            ctrl.focus();
+            ctrl.setSelectionRange(start, end);
+        }
+        // IE < 9
+        else if (ctrl.createTextRange) {
+            var range = ctrl.createTextRange();
+            range.collapse(true);
+            range.moveEnd("character", end);
+            range.moveStart("character", start);
+            range.select();
+        }
     }
 
     function handleValueModification(event) {
@@ -208,6 +230,7 @@ AppController = (function (BudgetCntl, UICntl) {
         var oldCaret = this.selectionStart;
         var oldText = this.value;
         var keyCode = event.keyCode;
+        var lengthBefore = this.value.length;
         var noOfDigitsBeforeCaret = oldText
             .substr(0, oldCaret)
             .replace(/[^\d]/g, "").length;
@@ -216,14 +239,14 @@ AppController = (function (BudgetCntl, UICntl) {
             var obj = document.querySelector(DOMStrings.desc_value);
 
             // handle 1st character should not be anything other than digits
-            console.log(obj.value);
             obj.value = obj.value.replace(/[^0-9,.]/g, "");
-            console.log(obj.value);
+            var lengthAfter = obj.value.length;
+            var newText = obj.value;
 
             if (event.ctrlKey || event.shiftKey) return;
 
             var caretNew = obj.selectionStart;
-            var oldVal = obj.value.replaceAll(",", "");
+            var oldVal = obj.value.replace(/[,]/g, "");
             var intVal = oldVal,
                 decimalVal = "";
             if (oldVal.indexOf(".") != -1) {
@@ -233,23 +256,6 @@ AppController = (function (BudgetCntl, UICntl) {
             intVal = UICntl.convertToIndianCurrency(intVal);
             var newVal = intVal + decimalVal;
             obj.value = newVal;
-
-            // backspace
-            if (keyCode == 8) {
-                if (
-                    oldCaret == 0 ||
-                    (oldCaret - 1 >= 0 && oldText[oldCaret - 1] == ".")
-                ) {
-                    // console.log('deleted <- .');
-                    setCaretAfterDigits(obj, noOfDigitsBeforeCaret);
-                } else if (oldCaret - 1 >= 0 && oldText[oldCaret - 1] == ",") {
-                    // console.log('deleted <- ,');
-                    obj.selectionEnd = obj.selectionStart = caretNew;
-                } else {
-                    // console.log('delete <- d');
-                    setCaretAfterDigits(obj, noOfDigitsBeforeCaret - 1);
-                }
-            }
 
             // delete
             if (keyCode == 46) {
@@ -264,6 +270,52 @@ AppController = (function (BudgetCntl, UICntl) {
                     setCaretAfterDigits(obj, noOfDigitsBeforeCaret);
                 }
             }
+            // backspace
+
+            if (keyCode == 8) {
+                if (
+                    oldCaret == 0 ||
+                    (oldCaret - 1 >= 0 && oldText[oldCaret - 1] == ".")
+                ) {
+                    // console.log('deleted <- .');
+                    setCaretAfterDigits(obj, noOfDigitsBeforeCaret);
+                } else if (oldCaret - 1 >= 0 && oldText[oldCaret - 1] == ",") {
+                    // console.log('deleted <- ,');
+                    obj.selectionEnd = obj.selectionStart = caretNew;
+                } else if(oldText.replace('[\D]','').length > newText.replace('[\D]','').length) {
+                    // console.log('delete <- d');
+                    setCaretAfterDigits(obj, noOfDigitsBeforeCaret - 1);
+                }
+            }
+
+            //add for android backspace, use trick that length will decrease on backspace, since keyCode will not work in android. on android everything returns 229.
+            
+            if (keyCode == 229) {
+                //handle ,
+                if (oldText.length==newText.length) {
+                    // console.log('deleted <- ,');
+                    obj.selectionEnd = obj.selectionStart = caretNew;
+                } 
+
+                if (oldText.length>newText.length) {
+                    // console.log('delete <- d');
+                    setCaretAfterDigits(obj, noOfDigitsBeforeCaret - 1);
+                }
+                // handle .
+                // if new . is added
+                if(oldText.indexOf('.')==-1){
+                    var dotIndex=newVal.indexOf('.');
+                    if(dotIndex!=-1){
+                        setCaretPosition(obj, dotIndex+1,dotIndex+1);
+                    }
+                }
+                // if . is removed
+                else{
+                    var dotIndex=oldVal.indexOf('.');
+                    setCaretAfterDigits(obj, noOfDigitsBeforeCaret);
+                }
+            }
+
         }
         setTimeout(dolater);
     }
