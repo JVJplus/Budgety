@@ -291,16 +291,6 @@ AppController = (function (BudgetCntl, UICntl) {
             //add for android backspace, use trick that length will decrease on backspace, since keyCode will not work in android. on android everything returns 229.
             
             if (keyCode == 229) {
-                //handle ,
-                if (oldText.length==newText.length) {
-                    // console.log('deleted <- ,');
-                    obj.selectionEnd = obj.selectionStart = caretNew;
-                } 
-
-                if (oldText.length>newText.length) {
-                    // console.log('delete <- d');
-                    setCaretAfterDigits(obj, noOfDigitsBeforeCaret - 1);
-                }
                 // handle .
                 // if new . is added
                 if(oldText.indexOf('.')==-1){
@@ -312,7 +302,20 @@ AppController = (function (BudgetCntl, UICntl) {
                 // if . is removed
                 else{
                     var dotIndex=oldVal.indexOf('.');
-                    setCaretAfterDigits(obj, noOfDigitsBeforeCaret);
+                    if(dotIndex==-1){
+                        setCaretAfterDigits(obj, noOfDigitsBeforeCaret);
+                    }
+                }
+
+                //handle ,
+                if (oldCaret - 1 >= 0 && oldText[oldCaret - 1] == ","){
+                    // console.log('deleted <- ,');
+                    obj.selectionEnd = obj.selectionStart = caretNew;
+                } 
+                else if (oldText.length>newText.length) {
+                    // console.log('delete <- d');
+                    // alert('ok doing');
+                    setCaretAfterDigits(obj, noOfDigitsBeforeCaret-1);
                 }
             }
 
