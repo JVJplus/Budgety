@@ -6,11 +6,13 @@ AppController = (function (BudgetCntl, UICntl) {
         var inputs = UICntl.getInputs();
 
         if (!inputs.desc) {
+            console.log("Enter Description");
             document.querySelector(DOMStrings.desc).focus();
             return;
         }
 
         if (isNaN(inputs.value)) {
+            console.log("Enter Value");
             var ele = document.querySelector(DOMStrings.desc_value);
             ele.focus();
 
@@ -22,7 +24,6 @@ AppController = (function (BudgetCntl, UICntl) {
                     ele.style.color = "inherit";
                 }, 500);
             }
-
             return;
         }
 
@@ -108,12 +109,11 @@ AppController = (function (BudgetCntl, UICntl) {
             .querySelector(DOMStrings.desc_value)
             .addEventListener("textInput", changeToIndianStyle);
 
-
         // Change Description to Sentence Case.
         document
             .querySelector(DOMStrings.desc)
             .addEventListener("textInput", changeToSentenceCase);
-            
+
         // Handle Backspacing
         document
             .querySelector(DOMStrings.desc)
@@ -268,10 +268,21 @@ AppController = (function (BudgetCntl, UICntl) {
                 } else {
                     // console.log('delete -> d');
                     setCaretAfterDigits(obj, noOfDigitsBeforeCaret);
+                    // if next pos has '.' move after that
+                    if (
+                        obj.value[obj.selectionStart] == "." &&
+                        oldCaret > oldText.indexOf(".")
+                    ) {
+                        setCaretPosition(
+                            obj,
+                            obj.selectionStart + 1,
+                            obj.selectionEnd + 1
+                        );
+                    }
                 }
             }
-            // backspace
 
+            // backspace
             if (keyCode == 8) {
                 if (
                     oldCaret == 0 ||
@@ -282,43 +293,66 @@ AppController = (function (BudgetCntl, UICntl) {
                 } else if (oldCaret - 1 >= 0 && oldText[oldCaret - 1] == ",") {
                     // console.log('deleted <- ,');
                     obj.selectionEnd = obj.selectionStart = caretNew;
-                } else if(oldText.replace('[\D]','').length > newText.replace('[\D]','').length) {
+                } else if (
+                    oldText.replace("[D]", "").length >
+                    newText.replace("[D]", "").length
+                ) {
                     // console.log('delete <- d');
                     setCaretAfterDigits(obj, noOfDigitsBeforeCaret - 1);
+                    // if next pos has '.' move after that
+                    if (
+                        obj.value[obj.selectionStart] == "." &&
+                        oldCaret > oldText.indexOf(".")
+                    ) {
+                        setCaretPosition(
+                            obj,
+                            obj.selectionStart + 1,
+                            obj.selectionEnd + 1
+                        );
+                    }
                 }
             }
 
             //add for android backspace, use trick that length will decrease on backspace, since keyCode will not work in android. on android everything returns 229.
-            
+
             if (keyCode == 229) {
-                // handle .
-                // if new . is added
-                if(oldText.indexOf('.')==-1){
-                    var dotIndex=newVal.indexOf('.');
-                    if(dotIndex!=-1){
-                        setCaretPosition(obj, dotIndex+1,dotIndex+1);
+                //handle ,
+                if (oldCaret - 1 >= 0 && oldText[oldCaret - 1] == ",") {
+                    // console.log('deleted <- ,');
+                    obj.selectionEnd = obj.selectionStart = caretNew;
+                } else if (oldText.length > newText.length) {
+                    // console.log('delete <- d');
+                    // alert('ok doing');
+                    setCaretAfterDigits(obj, noOfDigitsBeforeCaret - 1);
+                    // if next pos has '.' move after that
+                    if (
+                        obj.value[obj.selectionStart] == "." &&
+                        oldCaret > oldText.indexOf(".")
+                    ) {
+                        setCaretPosition(
+                            obj,
+                            obj.selectionStart + 1,
+                            obj.selectionEnd + 1
+                        );
                     }
                 }
-                // if . is removed
-                else{
-                    var dotIndex=oldVal.indexOf('.');
-                    if(dotIndex==-1){
+
+                // handle '.'
+                // if new '.' is added
+                if (oldText.indexOf(".") == -1) {
+                    var dotIndex = newVal.indexOf(".");
+                    if (dotIndex != -1) {
+                        setCaretPosition(obj, dotIndex + 1, dotIndex + 1);
+                    }
+                }
+                // if '.' is removed
+                else {
+                    var dotIndex = newVal.indexOf(".");
+                    if (dotIndex == -1) {
                         setCaretAfterDigits(obj, noOfDigitsBeforeCaret);
                     }
                 }
-
-                //handle ,
-                if (oldCaret - 1 >= 0 && oldText[oldCaret - 1] == ","){
-                    // console.log('deleted <- ,');
-                    obj.selectionEnd = obj.selectionStart = caretNew;
-                } 
-                else if (oldText.length>newText.length) {
-                    // console.log('delete <- d');
-                    // alert('ok doing');
-                    setCaretAfterDigits(obj, noOfDigitsBeforeCaret-1);
-                }
             }
-
         }
         setTimeout(dolater);
     }
