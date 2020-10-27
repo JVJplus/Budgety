@@ -237,13 +237,22 @@ AppController = (function (BudgetCntl, UICntl) {
 
         function dolater() {
             var obj = document.querySelector(DOMStrings.desc_value);
+            var isCut = 0;
 
             // handle 1st character should not be anything other than digits
             obj.value = obj.value.replace(/[^0-9,.]/g, "");
             var lengthAfter = obj.value.length;
             var newText = obj.value;
 
-            if (event.ctrlKey || event.shiftKey) return;
+            if (event.ctrlKey || event.shiftKey) {
+                // handle cut
+                if (keyCode == 88) {
+                    // place caret at proper location and skip return statement. :P
+                    isCut = 1;
+                } else {
+                    return;
+                }
+            }
 
             var caretNew = obj.selectionStart;
             var oldVal = obj.value.replace(/[,]/g, "");
@@ -256,6 +265,21 @@ AppController = (function (BudgetCntl, UICntl) {
             intVal = UICntl.convertToIndianCurrency(intVal);
             var newVal = intVal + decimalVal;
             obj.value = newVal;
+
+            if (isCut) {
+                setCaretAfterDigits(obj, noOfDigitsBeforeCaret);
+                // if next pos has '.' move after that
+                if (
+                    obj.value[obj.selectionStart] == "." &&
+                    oldCaret > oldText.indexOf(".")
+                ) {
+                    setCaretPosition(
+                        obj,
+                        obj.selectionStart + 1,
+                        obj.selectionEnd + 1
+                    );
+                }
+            }
 
             // delete
             if (keyCode == 46) {
