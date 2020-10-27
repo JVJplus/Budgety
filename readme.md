@@ -17,6 +17,10 @@ The HTML and CSS code involved in this project were pre-written by Mr. Schmedtma
 
 We had to write the JS code after watching the videos.
 
+## Special Features
+* Description auto corrects to sentence case.
+* Value auto corrects to Indian Currency Style.
+
 ## Features To Add
 * Add time when added to list
 * Option to edit description
@@ -28,7 +32,6 @@ We had to write the JS code after watching the videos.
 * Add Quantity Option
 
 ## To Fix
-* reset designs, width reduce, remove pre text
 * Try to find one and push a issue! :P
 
 ## Architecture of App
