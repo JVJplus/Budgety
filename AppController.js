@@ -471,11 +471,36 @@ AppController = (function (BudgetCntl, UICntl) {
         updatePercentages();
     }
 
+    function restorePrevData(){
+        window.addEventListener('load',function(e){
+            var prevData=BudgetCntl.restoreLocalStorage();
+            var prevIncomes=prevData.inc;
+            var prevExpenses=prevData.exp;
+
+            // console.log(prevIncomes);
+            // console.log(prevExpenses);
+
+            prevIncomes.forEach(i=>{
+                BudgetCntl.addItem(i);
+                UICntl.addListItem("inc",i);
+            });
+            
+            prevExpenses.forEach(i=>{
+                BudgetCntl.addItem(i);
+                UICntl.addListItem("exp",i);
+            });
+
+            updatePercentages();
+            updateBudget();
+        });
+    }
+
     return {
         init: function () {
             updateTime();
             updateBudget();
             addEventController();
+            restorePrevData();
         },
     };
 })(BudgetController, UIController);
